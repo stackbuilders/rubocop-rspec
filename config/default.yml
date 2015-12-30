@@ -39,6 +39,6 @@ RSpec/VerifiedDoubles:
   Description: 'Prefer using verifying doubles over normal doubles.'
   Enabled: false
 
-RSpec/LineBetweenContexts
+RSpec/LineBetweenContexts:
   Description: 'Checks that context blocks are separated by an empty line'
   Enabled: false
