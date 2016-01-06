@@ -3,37 +3,38 @@
 module RuboCop
   module Cop
     module RSpec
-      # Checks for CR between level context.
-      #
-      # @example
-      #   # bad
-      #   context 'when someting' do
-      #     it { is_expected.to respond_with 200 }
-      #   end
-      #   context 'when someting else' do
-      #     it { is_expected.to respond_with 401 }
-      #   end
-      #
-      #   #good
-      #   context 'when someting' do
-      #     it { is_expected.to respond_with 200 }
-      #   end
-      #
-      #   context 'when someting else' do
-      #     it { is_expected.to respond_with 401 }
-      #   end
-
       class LineBetweenContexts < Cop
-        include RuboCop::RSpec::TopLevelContext
+        include OnContextBlock
 
         MESSAGE = 'Missing blank line between context blocks'
 
-        def on_top_level_context(node, _args)
-          return if single_top_level_context?
+        def on_context(node)
+          # Retreive the previous sibling
+          # of node, and if it's a context,
+          # check that there is CR inbetween
+           return unless node.parent
 
-          return unless context_statement_line_in_between node
+           nodes = [prev_context(node), node]
+           return if blank_lines_between?(*nodes)
+           add_offense(node, :keyword)
+        end
 
-          add_offense(node, :expression, MESSAGE)
+        private
+
+        def prev_context(node)
+          return nil unless node.sibling_index > 0
+          prev_node = node.parent.children[node.sibling_index -1]
+          return nil unless is_context?(prev_node)
+          prev_node
+        end
+
+        def blank_lines_between?(first_context_node, second_context_node)
+          lines_between_contexts(first_context_node, second_context_node).any?(&:blank?)
+        end
+
+        def lines_between_contexts(first_context_node, second_context_node)
+          line_range = (first_context_node.loc.end.line)..(second_context_node.loc.keyword.line - 2)
+          processed_source.lines[line_range]
         end
       end
     end

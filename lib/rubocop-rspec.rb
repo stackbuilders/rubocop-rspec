@@ -8,6 +8,9 @@ require 'rubocop/rspec/top_level_describe'
 
 RuboCop::RSpec::Inject.defaults!
 
+# mixin
+require 'rubocop/cop/rspec/mixin/on_context_block'
+
 # cops
 require 'rubocop/cop/rspec/describe_class'
 require 'rubocop/cop/rspec/describe_method'
@@ -15,5 +18,6 @@ require 'rubocop/cop/rspec/described_class'
 require 'rubocop/cop/rspec/example_wording'
 require 'rubocop/cop/rspec/file_path'
 require 'rubocop/cop/rspec/instance_variable'
+require 'rubocop/cop/rspec/line_between_contexts'
 require 'rubocop/cop/rspec/multiple_describes'
 require 'rubocop/cop/rspec/verified_doubles'
